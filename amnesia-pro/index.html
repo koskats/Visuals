@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMNESIA VISUALS - Professional Techno Visualizer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/addons/p5.sound.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #000;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        #controls {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: opacity 0.3s;
+        }
+        
+        #controls.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(255,255,255,0.5);
+        }
+        
+        .control-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+        
+        button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #fff;
+            box-shadow: 0 0 20px rgba(255,255,255,0.3);
+        }
+        
+        button.active {
+            background: #fff;
+            color: #000;
+            box-shadow: 0 0 30px rgba(255,255,255,0.8);
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+        
+        .file-label {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+            display: inline-block;
+        }
+        
+        .file-label:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #fff;
+        }
+        
+        .slider-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .slider-group label {
+            color: rgba(255,255,255,0.7);
+            font-size: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        input[type="range"] {
+            width: 150px;
+            cursor: pointer;
+        }
+        
+        #bpm-display {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            color: rgba(255,255,255,0.5);
+            font-size: 12px;
+            letter-spacing: 2px;
+            font-weight: 300;
+        }
+        
+        #info {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            color: rgba(255,255,255,0.3);
+            font-size: 10px;
+            letter-spacing: 1px;
+        }
+        
+        .beat-indicator {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.1s;
+        }
+        
+        .beat-indicator.beat {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(2);
+        }
+    </style>
+</head>
+<body>
+    <div id="controls">
+        <div class="logo">AMNESIA</div>
+        
+        <div class="control-group">
+            <label for="audioFile" class="file-label">📁 LOAD TRACK</label>
+            <input type="file" id="audioFile" accept="audio/*">
+            
+            <button id="playBtn">▶ PLAY</button>
+            <button id="pauseBtn">⏸ PAUSE</button>
+            
+            <div class="slider-group">
+                <label>INTENSITY</label>
+                <input type="range" id="intensity" min="0" max="2" step="0.1" value="1">
+            </div>
+            
+            <button id="mode1" class="active">Q - TUNNEL</button>
+            <button id="mode2">W - LASER</button>
+            <button id="mode3">E - MATRIX</button>
+            <button id="mode4">R - STROBE</button>
+            <button id="mode5">T - INFINITY</button>
+            <button id="mode6">Y - MEDUSA</button>
+            <button id="mode7">U - HYPNOTIC</button>
+            <button id="mode8">I - VORTEX</button>
+            <button id="mode9">O - CYBER</button>
+            <button id="mode10">P - NEURAL</button>
+            <button id="mode11">A - GLITCH</button>
+            <button id="mode12">S - JELLYFISH</button>
+            <button id="mode13">D - FRACTAL</button>
+            <button id="mode14">F - PULSE</button>
+            <button id="mode15">G - EYE</button>
+            <button id="mode16">Z - HAND</button>
+            <button id="mode17">X - PORTAL</button>
+            
+            <button id="fullscreen">⛶ FULLSCREEN</button>
+            <button id="hideUI">HIDE UI</button>
+        </div>
+    </div>
+    
+    <div id="bpm-display">BPM: <span id="bpm">--</span></div>
+    <div id="info">Q-X: MODES | H: TOGGLE UI | SPACE: PAUSE | V: FULLSCREEN</div>
+    <div class="beat-indicator" id="beatIndicator"></div>
+    
+    <script src="amnesia.js"></script>
+</body>
+</html>
